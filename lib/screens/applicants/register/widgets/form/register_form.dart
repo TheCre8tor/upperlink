@@ -1,8 +1,18 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:upperlink/shared/widgets/buttons/filled_button.dart';
 
-class RegisterForm extends StatelessWidget {
+class RegisterForm extends StatefulWidget {
   const RegisterForm({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterForm> createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<RegisterForm> {
+  String? coverLetterName;
 
   @override
   Widget build(BuildContext context) {
@@ -105,10 +115,26 @@ class RegisterForm extends StatelessWidget {
             ],
           ),
           FilledButton(
-            name: "Upload Passport",
+            name: coverLetterName ?? "Upload Passport",
             padding: const EdgeInsets.only(top: 24),
             background: Colors.green,
-            onPressed: () {},
+            onPressed: () async {
+              final result = await FilePicker.platform.pickFiles();
+              if (result == null) return;
+
+              final upload = result.files.first;
+
+              setState(() {
+                coverLetterName = "Passport uploaded...";
+              });
+
+              // final file = File(result!.files.single.path!);
+              // print("File name: ${upload.name}");
+              // print("File name: ${upload.bytes}");
+              // print("File name: ${upload.size}");
+              // print("File name: ${upload.extension}");
+              // print("File name: ${upload.path}");
+            },
           ),
           FilledButton(
             name: "Upload Resume",
