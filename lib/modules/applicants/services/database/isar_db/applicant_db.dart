@@ -6,23 +6,23 @@ part 'applicant_db.g.dart';
 
 @Collection()
 class ApplicantDB {
-  Id get isarId => fastHash(id);
+  Id get isarId => fastHash(id!);
 
-  late String id;
+  late String? id;
 
-  late String firstName;
+  late String? firstName;
 
-  late String surname;
+  late String? surname;
 
-  late int phoneNumber;
+  late String? phoneNumber;
 
-  late String email;
+  late String? email;
 
-  late String coverLetter;
+  late String? coverLetter;
 
-  late String passport;
+  late String? passport;
 
-  late String resume;
+  late String? resume;
 }
 
 /// FNV-1a 64bit hash algorithm optimized for Dart Strings

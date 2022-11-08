@@ -1,7 +1,11 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:upperlink/modules/applicants/domain/domain.dart';
+import 'package:upperlink/screens/applicants/register/cubit/applicant_cubit.dart';
 import 'package:upperlink/shared/widgets/buttons/filled_button.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -12,11 +16,23 @@ class RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<RegisterForm> {
-  String? coverLetterName;
+  String? passportUploadMsg;
+  Uint8List? passport;
+  String? resumeUploadMsg;
+  Uint8List? resume;
+
+  String? firstname;
+  String? surname;
+  String? phoneNumber;
+  String? email;
+  String? coverLetter;
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,6 +51,11 @@ class _RegisterFormState extends State<RegisterForm> {
                 color: Color(0xFFd5d5d5),
               ),
             ),
+            onChanged: (value) {
+              setState(() {
+                firstname = value;
+              });
+            },
           ),
           const SizedBox(height: 25),
           TextFormField(
@@ -51,6 +72,11 @@ class _RegisterFormState extends State<RegisterForm> {
                 color: Color(0xFFd5d5d5),
               ),
             ),
+            onChanged: (value) {
+              setState(() {
+                surname = value;
+              });
+            },
           ),
           const SizedBox(height: 25),
           TextFormField(
@@ -67,6 +93,10 @@ class _RegisterFormState extends State<RegisterForm> {
                 color: Color(0xFFd5d5d5),
               ),
             ),
+            keyboardType: TextInputType.phone,
+            onChanged: (value) {
+              phoneNumber = value;
+            },
           ),
           const SizedBox(height: 25),
           TextFormField(
@@ -83,6 +113,12 @@ class _RegisterFormState extends State<RegisterForm> {
                 color: Color(0xFFd5d5d5),
               ),
             ),
+            keyboardType: TextInputType.emailAddress,
+            onChanged: (value) {
+              setState(() {
+                email = value;
+              });
+            },
           ),
           const SizedBox(height: 25),
           Column(
@@ -111,42 +147,76 @@ class _RegisterFormState extends State<RegisterForm> {
                     color: Color(0xFFd5d5d5),
                   ),
                 ),
+                onChanged: (value) {
+                  coverLetter = value;
+                },
               ),
             ],
           ),
           FilledButton(
-            name: coverLetterName ?? "Upload Passport",
+            name: passportUploadMsg ?? "Upload Passport",
             padding: const EdgeInsets.only(top: 24),
             background: Colors.green,
             onPressed: () async {
-              final result = await FilePicker.platform.pickFiles();
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['jpg', 'jpeg'],
+              );
               if (result == null) return;
 
               final upload = result.files.first;
 
-              setState(() {
-                coverLetterName = "Passport uploaded...";
-              });
+              if (upload.size > 100) return;
 
-              // final file = File(result!.files.single.path!);
-              // print("File name: ${upload.name}");
-              // print("File name: ${upload.bytes}");
-              // print("File name: ${upload.size}");
-              // print("File name: ${upload.extension}");
-              // print("File name: ${upload.path}");
+              Uint8List? file = upload.bytes;
+
+              setState(() {
+                passportUploadMsg = "Passport uploaded...";
+                passport = file;
+              });
             },
           ),
           FilledButton(
             name: "Upload Resume",
             padding: const EdgeInsets.only(top: 15),
             background: Colors.purple,
-            onPressed: () {},
+            onPressed: () async {
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['pdf', 'doc', 'docx'],
+              );
+
+              if (result == null) return;
+
+              final upload = result.files.first;
+
+              if (upload.size > 2000) return;
+
+              Uint8List? file = upload.bytes;
+
+              setState(() {
+                resumeUploadMsg = "Resume uploaded...";
+                resume = file;
+              });
+            },
           ),
           FilledButton(
             name: "Apply",
             padding: const EdgeInsets.only(top: 54),
             background: Colors.blue,
-            onPressed: () {},
+            onPressed: () {
+              context.read<ApplicantCubit>().saveApplicant(
+                    applicant: Applicant(
+                      firstName: firstname,
+                      surname: surname,
+                      phoneNumber: phoneNumber,
+                      email: email,
+                      coverLetter: coverLetter,
+                      passport: passport,
+                      resume: resume,
+                    ),
+                  );
+            },
           )
         ],
       ),

@@ -45,7 +45,7 @@ const ApplicantDBSchema = CollectionSchema(
     r'phoneNumber': PropertySchema(
       id: 5,
       name: r'phoneNumber',
-      type: IsarType.long,
+      type: IsarType.string,
     ),
     r'resume': PropertySchema(
       id: 6,
@@ -78,13 +78,54 @@ int _applicantDBEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.coverLetter.length * 3;
-  bytesCount += 3 + object.email.length * 3;
-  bytesCount += 3 + object.firstName.length * 3;
-  bytesCount += 3 + object.id.length * 3;
-  bytesCount += 3 + object.passport.length * 3;
-  bytesCount += 3 + object.resume.length * 3;
-  bytesCount += 3 + object.surname.length * 3;
+  {
+    final value = object.coverLetter;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.email;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.firstName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.id;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.passport;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.phoneNumber;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.resume;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.surname;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -99,7 +140,7 @@ void _applicantDBSerialize(
   writer.writeString(offsets[2], object.firstName);
   writer.writeString(offsets[3], object.id);
   writer.writeString(offsets[4], object.passport);
-  writer.writeLong(offsets[5], object.phoneNumber);
+  writer.writeString(offsets[5], object.phoneNumber);
   writer.writeString(offsets[6], object.resume);
   writer.writeString(offsets[7], object.surname);
 }
@@ -111,14 +152,14 @@ ApplicantDB _applicantDBDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ApplicantDB();
-  object.coverLetter = reader.readString(offsets[0]);
-  object.email = reader.readString(offsets[1]);
-  object.firstName = reader.readString(offsets[2]);
-  object.id = reader.readString(offsets[3]);
-  object.passport = reader.readString(offsets[4]);
-  object.phoneNumber = reader.readLong(offsets[5]);
-  object.resume = reader.readString(offsets[6]);
-  object.surname = reader.readString(offsets[7]);
+  object.coverLetter = reader.readStringOrNull(offsets[0]);
+  object.email = reader.readStringOrNull(offsets[1]);
+  object.firstName = reader.readStringOrNull(offsets[2]);
+  object.id = reader.readStringOrNull(offsets[3]);
+  object.passport = reader.readStringOrNull(offsets[4]);
+  object.phoneNumber = reader.readStringOrNull(offsets[5]);
+  object.resume = reader.readStringOrNull(offsets[6]);
+  object.surname = reader.readStringOrNull(offsets[7]);
   return object;
 }
 
@@ -130,21 +171,21 @@ P _applicantDBDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -245,8 +286,26 @@ extension ApplicantDBQueryWhere
 extension ApplicantDBQueryFilter
     on QueryBuilder<ApplicantDB, ApplicantDB, QFilterCondition> {
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      coverLetterIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'coverLetter',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      coverLetterIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'coverLetter',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       coverLetterEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -260,7 +319,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       coverLetterGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -276,7 +335,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       coverLetterLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -292,8 +351,8 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       coverLetterBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -380,8 +439,25 @@ extension ApplicantDBQueryFilter
     });
   }
 
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> emailIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'email',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      emailIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'email',
+      ));
+    });
+  }
+
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> emailEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -395,7 +471,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       emailGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -410,7 +486,7 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> emailLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -425,8 +501,8 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> emailBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -513,8 +589,26 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      firstNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'firstName',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      firstNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'firstName',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       firstNameEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -528,7 +622,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       firstNameGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -544,7 +638,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       firstNameLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -560,8 +654,8 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       firstNameBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -648,8 +742,24 @@ extension ApplicantDBQueryFilter
     });
   }
 
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> idEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -662,7 +772,7 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> idGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -677,7 +787,7 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> idLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -692,8 +802,8 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> idBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -832,8 +942,26 @@ extension ApplicantDBQueryFilter
     });
   }
 
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      passportIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'passport',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      passportIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'passport',
+      ));
+    });
+  }
+
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> passportEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -847,7 +975,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       passportGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -863,7 +991,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       passportLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -878,8 +1006,8 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> passportBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -968,49 +1096,76 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
-      phoneNumberEqualTo(int value) {
+      phoneNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'phoneNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'phoneNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'phoneNumber',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       phoneNumberGreaterThan(
-    int value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'phoneNumber',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       phoneNumberLessThan(
-    int value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'phoneNumber',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       phoneNumberBetween(
-    int lower,
-    int upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1019,12 +1174,100 @@ extension ApplicantDBQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'phoneNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'phoneNumber',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'phoneNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      phoneNumberIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'phoneNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> resumeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'resume',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      resumeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'resume',
       ));
     });
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> resumeEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1038,7 +1281,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       resumeGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1053,7 +1296,7 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> resumeLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1068,8 +1311,8 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> resumeBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1157,8 +1400,26 @@ extension ApplicantDBQueryFilter
     });
   }
 
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      surnameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'surname',
+      ));
+    });
+  }
+
+  QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
+      surnameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'surname',
+      ));
+    });
+  }
+
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> surnameEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1172,7 +1433,7 @@ extension ApplicantDBQueryFilter
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition>
       surnameGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1187,7 +1448,7 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> surnameLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1202,8 +1463,8 @@ extension ApplicantDBQueryFilter
   }
 
   QueryBuilder<ApplicantDB, ApplicantDB, QAfterFilterCondition> surnameBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1545,9 +1806,10 @@ extension ApplicantDBQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ApplicantDB, ApplicantDB, QDistinct> distinctByPhoneNumber() {
+  QueryBuilder<ApplicantDB, ApplicantDB, QDistinct> distinctByPhoneNumber(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'phoneNumber');
+      return query.addDistinctBy(r'phoneNumber', caseSensitive: caseSensitive);
     });
   }
 
@@ -1574,49 +1836,49 @@ extension ApplicantDBQueryProperty
     });
   }
 
-  QueryBuilder<ApplicantDB, String, QQueryOperations> coverLetterProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> coverLetterProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'coverLetter');
     });
   }
 
-  QueryBuilder<ApplicantDB, String, QQueryOperations> emailProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> emailProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'email');
     });
   }
 
-  QueryBuilder<ApplicantDB, String, QQueryOperations> firstNameProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> firstNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'firstName');
     });
   }
 
-  QueryBuilder<ApplicantDB, String, QQueryOperations> idProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<ApplicantDB, String, QQueryOperations> passportProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> passportProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'passport');
     });
   }
 
-  QueryBuilder<ApplicantDB, int, QQueryOperations> phoneNumberProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> phoneNumberProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'phoneNumber');
     });
   }
 
-  QueryBuilder<ApplicantDB, String, QQueryOperations> resumeProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> resumeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'resume');
     });
   }
 
-  QueryBuilder<ApplicantDB, String, QQueryOperations> surnameProperty() {
+  QueryBuilder<ApplicantDB, String?, QQueryOperations> surnameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'surname');
     });

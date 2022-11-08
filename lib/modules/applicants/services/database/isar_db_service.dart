@@ -27,14 +27,14 @@ class IsarDBService implements BaseDBService<Isar> {
 
   @override
   Future<void> saveApplicant({
-    required String id,
-    required String firstName,
-    required String surname,
-    required int phoneNumber,
-    required String email,
-    required String coverLetter,
-    required String passport,
-    required String resume,
+    String? id,
+    String? firstName,
+    String? surname,
+    String? phoneNumber,
+    String? email,
+    String? coverLetter,
+    String? passport,
+    String? resume,
   }) async {
     final isar = await db;
 
