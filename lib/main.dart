@@ -1,3 +1,4 @@
+import 'package:upperlink/dependency_injection.dart' as dependency_injection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:upperlink/shared/core/theme/theme.dart';
@@ -5,6 +6,8 @@ import 'package:upperlink/shared/infrastructure/router/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dependency_injection.init();
 
   await SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],
